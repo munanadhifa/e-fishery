@@ -1,24 +1,52 @@
-import {
-  ChevronDownIcon,
-  FunnelIcon,
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-} from "@heroicons/react/20/solid";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
-import "./table.scss";
+import "./style.scss";
+import Modal from "./Modal";
+import Filter from "./Filter";
+import React, { useState, useEffect } from "react";
+import Datas from "./Data";
+import Pagination from "./Pagination";
 
-const people = [
-  {
-    name: "Lindsay Walton",
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-    role: "Member",
-  },
-  // More people...
-];
+const TableList = () => {
+  const [list, setList] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(10);
 
-export default function Example() {
+  const search = (list) => {
+    return list.filter((user) =>
+      user.komoditas.toLowerCase().includes(searchValue)
+    );
+  };
+
+  const fetchData = () => {
+    fetch(
+      "https://stein.efishery.com/v1/storages/5e1edf521073e315924ceab4/list"
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setList(data);
+      });
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Get current posts
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = list.slice(indexOfFirstPost, indexOfLastPost);
+
+  // Change page
+  const paginateFront = () => setCurrentPage(currentPage + 1);
+  const paginateBack = () => setCurrentPage(currentPage - 1);
+
+  // const handleDelete = (index, e) => {
+  //   setList(list.filter((user, i) => i !== index));
+  // };
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 mt-2">
       <div className="sm:flex sm:items-center">
@@ -39,27 +67,16 @@ export default function Example() {
           </svg>
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search Komoditas"
+            onChange={(e) => setSearchValue(e.target.value)}
             className="py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
           />
           <div className="">
-            <button
-              type="button"
-              className="inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto filter"
-            >
-              <FunnelIcon className="h-5 w-5 mr-2" aria-hidden="true" />
-              Filter
-            </button>
+            <Filter />
           </div>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-          >
-            <PlusIcon className="h-5 w-5 mr-2" aria-hidden="true" />
-            Add data
-          </button>
+          <Modal />
         </div>
       </div>
       <div className="mt-8 flex flex-col">
@@ -73,21 +90,21 @@ export default function Example() {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                     >
-                      <a href="#" className="group inline-flex">
+                      <p href="#" className="group inline-flex">
                         Komoditas
                         <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
                           <ChevronDownIcon
                             className="h-5 w-5"
-                            aria-hidden="true"
+                            ardia-hidden="true"
                           />
                         </span>
-                      </a>
+                      </p>
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      <a href="#" className="group inline-flex">
+                      <p href="#" className="group inline-flex">
                         Provinsi
                         <span className="ml-2 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300">
                           <ChevronDownIcon
@@ -95,13 +112,13 @@ export default function Example() {
                             aria-hidden="true"
                           />
                         </span>
-                      </a>
+                      </p>
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      <a href="#" className="group inline-flex">
+                      <p href="#" className="group inline-flex">
                         Kota
                         <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
                           <ChevronDownIcon
@@ -109,13 +126,13 @@ export default function Example() {
                             aria-hidden="true"
                           />
                         </span>
-                      </a>
+                      </p>
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      <a href="#" className="group inline-flex">
+                      <p href="#" className="group inline-flex">
                         Size
                         <span className="ml-2 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300">
                           <ChevronDownIcon
@@ -123,13 +140,13 @@ export default function Example() {
                             aria-hidden="true"
                           />
                         </span>
-                      </a>
+                      </p>
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      <a href="#" className="group inline-flex">
+                      <p href="#" className="group inline-flex">
                         Price
                         <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
                           <ChevronDownIcon
@@ -137,7 +154,7 @@ export default function Example() {
                             aria-hidden="true"
                           />
                         </span>
-                      </a>
+                      </p>
                     </th>
                     <th
                       scope="col"
@@ -147,48 +164,21 @@ export default function Example() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {people.map((person) => (
-                    <tr key={person.email}>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                        {person.name}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {person.title}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {person.email}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {person.role}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {person.role}
-                      </td>
-                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 inline-flex">
-                        <PencilIcon className="h-5 w-5" aria-hidden="true" />
-                        {/* <a
-                          href="#"
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          Edit<span className="sr-only">, {person.name}</span>
-                        </a> */}
-                        <TrashIcon className="h-5 w-5" aria-hidden="true" />
-                        {/* <a
-                          href="#"
-                          className="text-indigo-600 hover:text-indigo-900 ml-2"
-                        >
-                          Delete<span className="sr-only">, {person.name}</span>
-                        </a> */}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                <Datas list={search(currentPosts)} />
               </table>
+              <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={list.length}
+                paginateBack={paginateBack}
+                paginateFront={paginateFront}
+                currentPage={currentPage}
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default TableList;

@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { FunnelIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import "./style.scss";
 
 export default function Modal() {
   const [showModal, setShowModal] = useState(false);
   return (
     <>
-      <div className="flex items-center justify-center modal">
+      <div className="flex items-center justify-center">
         <button
-          className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+          className="inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto filter"
           type="button"
           onClick={() => setShowModal(true)}
         >
-          <PlusIcon className="h-5 w-5 mr-2" aria-hidden="true" />
-          Add Data
+          <FunnelIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+          Filter
         </button>
       </div>
       {showModal ? (
@@ -26,14 +26,13 @@ export default function Modal() {
             <div className="flex items-center min-h-screen px-4 py-8">
               <div className="relative w-full max-w-lg p-4 mx-auto bg-white rounded-md shadow-lg">
                 <div className="flex header-modal">
-                  <h1>Add Template</h1>
+                  <h1>Filter</h1>
                   <XMarkIcon
                     className="h-5 w-5 mr-2 m-auto"
                     aria-hidden="true"
                     onClick={() => setShowModal(false)}
                   />
                 </div>
-
                 <div className="mt-3 sm:flex">
                   <div className="flex items-center justify-center flex-none w-12 h-12 mx-auto bg-red-100 rounded-full">
                     <svg
