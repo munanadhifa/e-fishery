@@ -9,15 +9,15 @@ import Pagination from "./Pagination";
 
 const TableList = () => {
   const [list, setList] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
+  // const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
 
-  const search = (list) => {
-    return list.filter((user) =>
-      user.komoditas.toLowerCase().includes(searchValue)
-    );
-  };
+  // const search = (list) => {
+  //   return list.filter((user) =>
+  //     user.komoditas.toLowerCase().includes(searchValue)
+  //   );
+  // };
 
   const fetchData = () => {
     fetch(
@@ -43,9 +43,9 @@ const TableList = () => {
   const paginateFront = () => setCurrentPage(currentPage + 1);
   const paginateBack = () => setCurrentPage(currentPage - 1);
 
-  // const handleDelete = (index, e) => {
-  //   setList(list.filter((user, i) => i !== index));
-  // };
+  const handleDelete = (index, e) => {
+    setList(list.filter((user, i) => i !== index));
+  };
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 mt-2">
@@ -68,7 +68,6 @@ const TableList = () => {
           <input
             type="text"
             placeholder="Search Komoditas"
-            onChange={(e) => setSearchValue(e.target.value)}
             className="py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
           />
           <div className="">
@@ -164,7 +163,7 @@ const TableList = () => {
                     </th>
                   </tr>
                 </thead>
-                <Datas list={search(currentPosts)} />
+                <Datas list={currentPosts} handleDelete={handleDelete} />
               </table>
               <Pagination
                 postsPerPage={postsPerPage}
