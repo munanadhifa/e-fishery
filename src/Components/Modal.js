@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import axios from "axios";
 import "./style.scss";
 
 export default function Modal() {
@@ -7,6 +8,31 @@ export default function Modal() {
   const [users, setUsers] = useState([]);
   const [area, setArea] = useState([]);
   const [cities, setCities] = useState();
+
+  //Add Data
+  const [komoditas, setKomoditas] = useState("");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
+  const [size, setSize] = useState("");
+  const [price, setPrice] = useState("");
+
+  const data = {
+    komoditas: komoditas,
+    province: province,
+    city: city,
+    size: size,
+    price: price,
+  };
+
+  function submitForm(e) {
+    e.preventDefault();
+    axios
+      .post(
+        "https://stein.efishery.com/v1/storages/5e1edf521073e315924ceab4/list",
+        data
+      )
+      .then(setShowModal(false));
+  }
 
   const fetchUserData = () => {
     fetch(
@@ -89,6 +115,8 @@ export default function Modal() {
                         id="komoditas"
                         className="p-2 text-gray-500 w-full h-10 border rounded-md outline-none focus:bg-white focus:border-indigo-60"
                         placeholder="Komoditas"
+                        value={komoditas}
+                        onChange={(e) => setKomoditas(e.target.value)}
                       />
                     </div>
                   </div>
@@ -138,6 +166,8 @@ export default function Modal() {
                       name="location"
                       className="mt-1 block w-full rounded-md border py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       defaultValue="120"
+                      value={size}
+                      onChange={(e) => setSize(e.target.value)}
                     >
                       {users.map((user) => (
                         <option key={user.id}>{user.size}</option>
@@ -158,12 +188,15 @@ export default function Modal() {
                         id="Price"
                         className="p-2 text-gray-500 w-full h-10 border rounded-md outline-none focus:bg-white focus:border-indigo-60"
                         placeholder="Price"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
                       />
                     </div>
                   </div>
                 </div>
                 <button
-                  type="button"
+                  type="submit"
+                  onClick={submitForm}
                   className="float-right bg-blue-300 mt-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-white shadow-sm"
                 >
                   Submit
