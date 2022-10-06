@@ -1,9 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import "./style.scss";
 
 export default function Modal() {
   const [showModal, setShowModal] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [area, setArea] = useState([]);
+  const [cities, setCities] = useState();
+
+  const fetchUserData = () => {
+    fetch(
+      "https://stein.efishery.com/v1/storages/5e1edf521073e315924ceab4/option_size"
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setUsers(data);
+      });
+  };
+
+  const fetchAreaData = () => {
+    fetch(
+      "https://stein.efishery.com/v1/storages/5e1edf521073e315924ceab4/option_area"
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setArea(data);
+      });
+  };
+
+  const onChangeComboBox = (e) => {
+    const selectedId = e.target.value;
+    console.log(selectedId);
+    const selectedProvince = area.filter((user) => user.id === selectedId)[0];
+    setCities(selectedProvince);
+  };
+
+  useEffect(() => {
+    fetchUserData();
+    fetchAreaData();
+    setCities(area[1]);
+  }, [area]);
+
   return (
     <>
       <div className="flex items-center justify-center modal">
@@ -33,47 +74,100 @@ export default function Modal() {
                     onClick={() => setShowModal(false)}
                   />
                 </div>
-
-                <div className="mt-3 sm:flex">
-                  <div className="flex items-center justify-center flex-none w-12 h-12 mx-auto bg-red-100 rounded-full">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6 text-red-600"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label
+                      htmlFor="text"
+                      className="block text-sm font-medium text-gray-700"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                        clipRule="evenodd"
+                      Komoditas
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        type="text"
+                        name="text"
+                        id="komoditas"
+                        className="p-2 text-gray-500 w-full h-10 border rounded-md outline-none focus:bg-white focus:border-indigo-60"
+                        placeholder="Komoditas"
                       />
-                    </svg>
+                    </div>
                   </div>
-                  <div className="mt-2 text-center sm:ml-4 sm:text-left">
-                    <h4 className="text-lg font-medium text-gray-800">
-                      Delete account ?
-                    </h4>
-                    <p className="mt-2 text-[15px] leading-relaxed text-gray-500">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
-                    </p>
-                    <div className="items-center gap-2 mt-3 sm:flex">
-                      <button
-                        className="w-full mt-2 p-2.5 flex-1 text-white bg-red-600 rounded-md outline-none ring-offset-2 ring-red-600 focus:ring-2"
-                        onClick={() => setShowModal(false)}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="w-full mt-2 p-2.5 flex-1 text-gray-800 rounded-md outline-none border ring-offset-2 ring-indigo-600 focus:ring-2"
-                        onClick={() => setShowModal(false)}
-                      >
-                        Cancel
-                      </button>
+                  <div className="form-provinsi">
+                    <label
+                      htmlFor="location"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Provinsi
+                    </label>
+                    <select
+                      id="location"
+                      name="location"
+                      className="mt-1 block w-full rounded-md border py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      value={cities?.id}
+                      onChange={(e) => {
+                        onChangeComboBox(e);
+                      }}
+                    >
+                      {area.map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.province}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="text"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Kota
+                    </label>
+                    <div className="mt-1">
+                      {cities ? <p>{cities.city}</p> : ""}
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="location"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Size
+                    </label>
+                    <select
+                      id="location"
+                      name="location"
+                      className="mt-1 block w-full rounded-md border py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      defaultValue="120"
+                    >
+                      {users.map((user) => (
+                        <option key={user.id}>{user.size}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="text"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Price
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        type="text"
+                        name="text"
+                        id="Price"
+                        className="p-2 text-gray-500 w-full h-10 border rounded-md outline-none focus:bg-white focus:border-indigo-60"
+                        placeholder="Price"
+                      />
                     </div>
                   </div>
                 </div>
+                <button
+                  type="button"
+                  className="float-right bg-blue-300 mt-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-white shadow-sm"
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </div>
