@@ -2,7 +2,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 import "./style.scss";
 import Modal from "./Modal";
-import Filter from "./Filter";
+// import Filter from "./Filter";
 import React, { useState, useEffect } from "react";
 import Datas from "./Data";
 import Pagination from "./Pagination";
@@ -12,12 +12,25 @@ const TableList = () => {
   // const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
+  const [area, setArea] = useState([]);
 
   // const search = (list) => {
   //   return list.filter((user) =>
   //     user.komoditas.toLowerCase().includes(searchValue)
   //   );
   // };
+
+  const fetchAreaData = () => {
+    fetch(
+      "https://stein.efishery.com/v1/storages/5e1edf521073e315924ceab4/option_area"
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setArea(data);
+      });
+  };
 
   const fetchData = () => {
     fetch(
@@ -32,6 +45,7 @@ const TableList = () => {
   };
   useEffect(() => {
     fetchData();
+    fetchAreaData();
   }, []);
 
   // Get current posts
@@ -70,8 +84,20 @@ const TableList = () => {
             placeholder="Search Komoditas"
             className="py-3 pl-12 pr-4 text-gray-500 border rounded-md outline-none bg-gray-50 focus:bg-white focus:border-indigo-600"
           />
-          <div className="">
-            <Filter />
+          <div className="select-filter">
+            <h1>Filter Province</h1>
+            <select
+              id="location"
+              name="location"
+              className="mt-1 block w-full rounded-md border py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+            >
+              {area.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.province}
+                </option>
+              ))}
+            </select>
+            {/* <Filter /> */}
           </div>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
